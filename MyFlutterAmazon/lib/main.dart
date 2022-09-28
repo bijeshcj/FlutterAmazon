@@ -1,75 +1,53 @@
 import 'dart:js';
 
 import 'package:flutter/material.dart';
+import 'package:myflutteramazon/constants/global_variable.dart';
+import 'package:myflutteramazon/providers/user_provider.dart';
+import 'package:myflutteramazon/router.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => UserPro)
-  ])const MyApp());
+    ChangeNotifierProvider(create: (context) => UserProvider()),
+  ],child: const MyApp(),));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget{
   const MyApp({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+
+}
+
+class _MyAppState extends State<MyApp>{
+
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+   return  MaterialApp(debugShowCheckedModeBanner: false,
+     title: 'Amazon clone',
+     theme: ThemeData(
+       scaffoldBackgroundColor: GlobalVariables.backgroundColor,
+       colorScheme: const ColorScheme.light(
+         primary: GlobalVariables.secondaryColor
+       ),
+       appBarTheme: const AppBarTheme(
+         elevation: 0,
+         iconTheme: IconThemeData(
+           color: Colors.black,
+         )
+       ),
+       useMaterial3: true,
+     ),
+     onGenerateRoute: (settings)=> generateRoute(settings),
+     home: Provider.of<UserProvider>(context).user.token.isNotEmpty?
+          Provider.of<UserProvider>(context).user.type == 'user'? const BottomBar(): const AdminScreen():
+      const AuthScreen(),
+   );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+
 }
+
+
